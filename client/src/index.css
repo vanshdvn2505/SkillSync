@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+#root,
+#app {
+  height: 100%; /* Ensures the app container spans the full height */
+}
+
+@layer base {
+  :root {
+    --background: 144 30% 90%; /* Light greenish background */
+    --foreground: 94 20% 10%; /* Darker foreground */
+    --card: 94 43% 92%; /* Matches background */
+    --card-foreground: 94 20% 10%; /* Matches foreground */
+    --popover: 94 43% 92%; /* Matches background */
+    --popover-foreground: 94 20% 10%; /* Matches foreground */
+    --primary: 120 41% 51%; /* Kelly Green */
+    --primary-foreground: 94 43% 92%; /* Spearmint for contrast */
+    --secondary: 94 40% 80%; /* Lighter shade of green */
+    --secondary-foreground: 94 20% 10%; /* Matches foreground */
+    --muted: 94 40% 80%; /* Lighter shade for muted content */
+    --muted-foreground: 94 30% 40%; /* Subdued foreground */
+    --accent: 120 41% 51%; /* Kelly Green for accent */
+    --accent-foreground: 94 43% 92%; /* Spearmint */
+    --destructive: 0 84% 60%; /* Red remains unchanged */
+    --destructive-foreground: 0 0% 98%; /* Matches white */
+    --border: 94 30% 70%; /* Subtle greenish border */
+    --input: 94 30% 70%; /* Matches border */
+    --ring: 94 20% 10%; /* Dark green */
+    --chart-1: 94 36% 51%; /* Lime Green */
+    --chart-2: 94 41% 41%; /* Seafoam Green */
+    --chart-3: 94 37% 33%; /* Deeper green for variation */
+    --chart-4: 94 41% 66%; /* Spearmint */
+    --chart-5: 94 50% 67%; /* Bright highlight green */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 94 20% 10%; /* Dark green background */
+    --foreground: 94 43% 92%; /* Light green foreground */
+    --card: 94 20% 10%; /* Matches dark background */
+    --card-foreground: 94 43% 92%; /* Matches foreground */
+    --popover: 94 20% 10%; /* Matches dark background */
+    --popover-foreground: 94 43% 92%; /* Matches foreground */
+    --primary: 94 43% 92%; /* Spearmint */
+    --primary-foreground: 94 20% 10%; /* Dark green */
+    --secondary: 94 30% 20%; /* Muted dark green */
+    --secondary-foreground: 94 43% 92%; /* Light green */
+    --muted: 94 30% 20%; /* Matches secondary */
+    --muted-foreground: 94 35% 40%; /* Subtle muted foreground */
+    --accent: 94 30% 20%; /* Dark green accent */
+    --accent-foreground: 94 43% 92%; /* Light green foreground */
+    --destructive: 0 62.8% 30.6%; /* Red remains unchanged */
+    --destructive-foreground: 94 43% 92%; /* Light green */
+    --border: 94 30% 30%; /* Dark greenish border */
+    --input: 94 30% 30%; /* Matches border */
+    --ring: 94 43% 92%; /* Light green for highlights */
+    --chart-1: 94 36% 51%; /* Lime Green */
+    --chart-2: 94 41% 41%; /* Seafoam Green */
+    --chart-3: 94 37% 33%; /* Deeper green for variation */
+    --chart-4: 94 41% 66%; /* Spearmint */
+    --chart-5: 94 50% 67%; /* Bright highlight green */
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
