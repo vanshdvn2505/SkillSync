@@ -13,7 +13,7 @@ export default function ThemeToggle() {
 
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       className="p-2 rounded bg-secondary text-secondary-foreground"
     >
       Toggle Theme
