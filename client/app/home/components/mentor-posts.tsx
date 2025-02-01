@@ -55,7 +55,7 @@ export function MentorPosts() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-4">
+    <div className="flex-1 overflow-y-auto px-4 mb-5">
       <h2 className="text-2xl font-bold mb-4">Mentor Posts</h2>
       <div className="space-y-4">
         {mentorPosts.map((post, index) => (
@@ -66,7 +66,7 @@ export function MentorPosts() {
             transition={{
               duration: 0.5,
               ease: "easeInOut",
-              delay: index * 0.2, // Stagger the animation for each post
+              delay: index * 0.5, // Stagger the animation for each post
             }}
           >
             <Card>

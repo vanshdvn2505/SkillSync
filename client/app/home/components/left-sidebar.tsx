@@ -1,7 +1,6 @@
 "use client";
 import { motion } from 'framer-motion';
 import { CardSpotlightDemo } from './left-sidebar-cards';
-// import { Card, CardContent, CardHeader, CardTitle } from "./ui/card-ui"
 
 const recentCommunities = [
   "React Enthusiasts",
