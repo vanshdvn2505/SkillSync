@@ -10,12 +10,12 @@ import {
   IconSignature,
   IconTableColumn,
 } from "@tabler/icons-react";
-import { Header } from "@/app/home/components/header";
+import { Navbar } from "@/components/Navbar";
 
 export function BentoGridAbout() {
   return (
     <div className="flex flex-col">
-      <Header />
+      <Navbar />
       <BentoGrid className="w-full mx-auto mt-4 lg:p-0 p-4 mb-4">
         {items.map((item, i) => (
           <BentoGridItem

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { SplashScreen } from "./components/splash-screen"
-import { Header } from "./components/header";
+import {  Navbar } from "../../components/Navbar";
 import LeftSidebar from "./components/left-sidebar";
 import { MentorPosts } from "./components/mentor-posts";
 import { RightSidebar } from "./components/right-sidebar";
@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen min-w-screen flex flex-col w-full bg-white ">
-      <Header />
+      <Navbar />
       <main className="flex-1 container mx-auto mt-6">
         <div className="flex">
           <div className="lg:block hidden">
