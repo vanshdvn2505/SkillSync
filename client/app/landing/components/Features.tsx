@@ -23,46 +23,41 @@ const features = [
   },
 ]
 
+const skills = [
+  { title: "React", link: "/react.svg" },
+  { title: "Vue", link: "/vue.svg" },
+  { title: "Python", link: "/python.svg" },
+  { title: "Kotlin", link: "/kotlin.svg" },
+  { title: "Blender", link: "/blender.svg" },
+  { title: "Laravel", link: "/laravel.svg" },
+  { title: "HTML5", link: "/html.svg" },
+  { title: "GoLang", link: "/golang.svg" },
+  { title: "CSS", link: "/css.svg" },
+  { title: "Tailwind", link: "/tailwind.svg" },
+  { title: "JavaScript", link: "/javascript.svg" },
+];
+
 function Features() {
 
   return (
     <div className='flex flex-col'>
-        <div className='flex justify-evenly items-center'>
-          <HoverEffect items={features} />
-        </div>
-        <div className='flex flex-col justify-center items-center'>
+        <HoverEffect items={features} />
+        <div className='flex flex-col justify-center items-center mt-30'>
           <div className='text-white py-10 flex flex-col justify-center items-center'>
-              <h1 className='text-3xl md:text-5xl py-2 w-2/3 font-bold text-center'>Mastering Various Tools for Your Needs</h1>
+              <h1 className='text-3xl mb-5 md:text-5xl py-2 w-2/3 font-bold text-center'>Mastering Various Tools for Your Needs</h1>
               <p className='text-xl'>Explore Frameworks and Technologies for Enhanced Development Skills</p>
           </div>
-          <motion.div className='flex flex-shrink-0 gap-2 mb-5'>
-            <SkillCard title="React" link='/react.svg' />
-            <SkillCard title="Vue" link='/vue.svg' />
-            <SkillCard title="Pyhton" link='/python.svg' />
-            <SkillCard title="Kotlin" link='/kotlin.svg' />
-            <SkillCard title="Blender" link='/blender.svg' />
-            <SkillCard title="Laravel" link='/laravel.svg' />
-            <SkillCard title="HTML5" link='/html.svg' />
-            <SkillCard title="GoLang" link='/golang.svg' />
-            <SkillCard title="CSS" link='/css.svg' />
-            <SkillCard title="Tailwind" link='/tailwind.svg' />
-            <SkillCard title="JavaScript" link='/javascript.svg' />
+          <motion.div className='flex flex-shrink-0 gap-2 m-5'>
+            {skills.map((skill, index) => (
+              <SkillCard key={index} title={skill.title} link={skill.link} />
+            ))}
           </motion.div>
           <motion.div className='flex flex-shrink-0 gap-2'>
-            <SkillCard title="JavaScript" link='/javascript.svg' />
-            <SkillCard title="Tailwind" link='/tailwind.svg' />
-            <SkillCard title="CSS" link='/css.svg' />
-            <SkillCard title="GoLang" link='/golang.svg' />
-            <SkillCard title="HTML5" link='/html.svg' />
-            <SkillCard title="Laravel" link='/laravel.svg' />
-            <SkillCard title="Blender" link='/blender.svg' />
-            <SkillCard title="Kotlin" link='/kotlin.svg' />
-            <SkillCard title="Pyhton" link='/python.svg' />
-            <SkillCard title="Vue" link='/vue.svg' />
-            <SkillCard title="React" link='/react.svg' />
+            {skills.slice().reverse().map((skill, index) => (
+                <SkillCard key={index} title={skill.title} link={skill.link} />
+            ))}
           </motion.div>
         </div>
-        <div className='h-[100vh]'></div> 
     </div>
   )
 }

@@ -4,6 +4,9 @@ import Hero from './components/Hero'
 import { Button } from '@/components/ui/button'
 import Navbar from './components/Navbar'
 import Features from './components/Features'
+import LearningPath from './components/LearningPath'
+import Potential from './components/Potential'
+import Footer from './components/Footer'
 
 function page() {
   return (
@@ -12,6 +15,9 @@ function page() {
             <Navbar />
             <Hero />
             <Features />
+            <LearningPath />
+            <Potential />
+            <Footer />
         </div>
     </>
   )
