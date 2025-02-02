@@ -8,7 +8,7 @@ import RightBox from './components/RightBox'
 const page = () => {
   return (
     <div className='min-h-screen w-full'>
-        <Navbar />
+      <Navbar />
       <motion.div
         className="h-full p-4 pt-0 transition-all duration-300 ease-in-out"
         initial={{ opacity: 0 }}

@@ -1,6 +1,7 @@
 import { Box } from '@/components/Box'
 import React from 'react'
 import Tabs from './right-box/Tabs'
+import Charts from './right-box/Charts'
 
 const RightBox = () => {
   return (
@@ -14,7 +15,7 @@ const RightBox = () => {
             </Box>
         </div>
         <Box className="flex-grow bg-foreground flex-1">
-            <div></div>
+            <Charts isStudent={true} />
         </Box>
         <Box className="flex-grow bg-foreground overflow-scroll no-scrollbar max-h-[504px]">
             <Tabs />
