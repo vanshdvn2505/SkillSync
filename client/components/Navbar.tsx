@@ -22,7 +22,7 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-[#464646] border-b-[1px] bg-foreground text-primary-foreground px-10">
+    <header className="sticky top-0 z-[60] w-full border-[#464646] border-b-[1px] bg-foreground text-primary-foreground px-10">
       <div className="container flex h-14 items-center justify-between">
         {/* Logo and Menu */}
         <div className="flex items-center">
