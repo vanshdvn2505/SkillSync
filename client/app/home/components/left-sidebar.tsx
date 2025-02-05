@@ -29,7 +29,7 @@ const myCommunities = [
 export default function LeftSidebar() {
   return (
     <aside className="w-64 pr-4">
-      <div className="sticky top-20 py-1 space-y-4 flex flex-col">
+      <div className="sticky top-20 py-1 space-y-4 flex flex-col ">
         <motion.div
           initial={{ y: -10 }}
           animate={{ y: 0 }}

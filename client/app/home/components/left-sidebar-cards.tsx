@@ -2,7 +2,7 @@ import { CardSpotlight } from "./ui/card-spotlight";
 
 export function CardSpotlightDemo() {
   return (
-    <CardSpotlight className="h-[250px] w-[250px] text-sm shadow-xl">
+    <CardSpotlight className="h-[250px] w-[250px] text-sm shadow-xl bg-foreground">
       <p className="text-xl font-bold relative z-20 mt-2 text-white">
         Top Communities
       </p>

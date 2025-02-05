@@ -12,35 +12,32 @@ export function RightSidebar() {
   return (
     <aside className="w-80 pl-4">
       <div className="sticky top-20">
-        <Card className="mb-4">
-          <CardHeader>
-            {/* <CardTitle>Calendar</CardTitle> */}
-          </CardHeader>
-          <CardContent>
+        <Card className="mb-4 bg-foreground py-4 px-2 border-none shadow-primary shadow-sm ">
+          <CardContent className="bg-foreground text-accent flex items-center justify-center">
             <Calendar />
           </CardContent>
         </Card>
-        <Card className="shadow-lg ">
+        <Card className="shadow-lg bg-foreground border-none">
           <CardHeader>
-            <CardTitle>Upcoming Meetings</CardTitle>
+            <CardTitle className="text-muted text-center">Upcoming Meetings</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="shadow-primary shadow-sm">
             <ul className="space-y-2">
               {upcomingMeetings.map((meeting, index) => (
                 <>
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-5 shadow-sm">
                   <div className="shadow-md px-4 py-2 rounded-md">
                     <li key={index} className="flex justify-between text-sm">
-                      <span>{meeting.title}</span>
+                      <span className="text-accent">{meeting.title}</span>
                       <span className="text-muted-foreground">
                         {meeting.time}
                       </span>
                     </li>
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-sm text-muted-foreground">Community one</span>
-                      <button className="bg-purple-200 py-2 px-2 rounded-lg text-sm">
+                      <Button className="bg-primary py-2 px-2 rounded-lg text-sm" >
                         Join Now
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   </div>
