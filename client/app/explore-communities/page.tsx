@@ -1,10 +1,12 @@
 'use client'
 
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Navbar } from "@/components/Navbar"
 import ExploreCommunities from "./components/explore-communities"
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+import { Button } from "@/components/ui/button"
+import { CreateCommunityForm } from "./components/createCommunity"
 
 const placeholders = [
     "What's the first rule of Fight Club?",
@@ -24,6 +26,9 @@ const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 };
 
 export default function Home() {
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -35,6 +40,8 @@ export default function Home() {
                 onChange={handleChange}
                 onSubmit={onSubmit}
             />
+            {/* <Button onClick={() => setIsFormOpen(true)}>Create Community</Button> */}
+            <CreateCommunityForm  />
         </div>
         <Suspense fallback={<ExploreSkeleton />}>
           <ExploreCommunities />
