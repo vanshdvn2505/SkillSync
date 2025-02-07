@@ -6,14 +6,14 @@ import { ThumbsUp } from 'lucide-react'
 export function PostPopup({ post, onClose }: any) {
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[625px]">
+      <DialogContent className="sm:max-w-[625px] border-none">
         <DialogHeader>
-          <DialogTitle>{post.title}</DialogTitle>
+          <DialogTitle className="text-accent">{post.title}</DialogTitle>
         </DialogHeader>
         <div className="mt-4">
           <p className="text-sm text-muted-foreground mb-2">{post.subtitle}</p>
           <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-64 object-cover mb-4 rounded-md" />
-          <p className="mb-4">{post.content}</p>
+          <p className="mb-4 text-accent">{post.content}</p>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm">
@@ -27,7 +27,7 @@ export function PostPopup({ post, onClose }: any) {
                 <AvatarFallback>{post.author.split(' ').map((n: any[]) => n[0]).join('')}</AvatarFallback>
               </Avatar>
               <div className="text-sm">
-                <p className="font-semibold">{post.author}</p>
+                <p className="font-semibold text-accent">{post.author}</p>
                 <p className="text-muted-foreground">{post.community}</p>
               </div>
             </div>
