@@ -9,41 +9,59 @@ import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import AuthHeader from "../components/auth-header";
-
-const schema = z.object({
-  firstname: z.string().min(2, "First name is required"),
-  lastname: z.string().min(2, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  gender: z.enum(["Male", "Female", "Other"], { required_error: "Gender is required" }),
-  role: z.enum(["Mentor", "Learner"], { required_error: "Role is required" }),
-});
+import { useMutation } from "@apollo/client";
+import { signupSchema } from "@/types/zodSchema/signupSchema-zod";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { SIGNUP } from "@/graphql/mutations/authMutations";
 
 export default function SignupFormDemo() {
+
+  const { toast } = useToast();
+
+  const [createUser, { data, loading, error }] = useMutation(SIGNUP);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({ resolver: zodResolver(signupSchema) });
 
-  const onSubmit = (data: any) => {
-    console.log("Form submitted", data);
+  const onSubmit = async (data: any) => {
+    // console.log("Form submitted", data);
+    try {
+      const response = await createUser({ variables: data });
+      // console.log(response);
+      toast({
+        title: "SignUp Successfull",
+        description: "Verify Email To Continue",
+        duration: 5000,
+      })
+      
+    } catch (error) {
+      console.error("SignUp error ", error);
+      toast({
+        title: "Sign Up Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="z-10 h-screen w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-transparent flex flex-col justify-center items-center ">
+    <div className="z-10 text-primary-foreground h-screen w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-transparent flex flex-col justify-center items-center ">
       <AuthHeader />
-      <form className="my-8 lg:w-1/2 w-full mt-20" onSubmit={handleSubmit(onSubmit)}>
+      <form className="lg:w-1/2 w-full mt-28" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="firstname" className="text-accent">First name</Label>
-            <Input id="firstname" placeholder="Tyler" type="text" {...register("firstname")} />
-            {errors.firstname && <p className="text-red-500 text-sm">{errors.firstname?.message as string}</p>}
+            <Label htmlFor="firstName" className="text-accent">First name</Label>
+            <Input id="firstName" placeholder="Tyler" type="text" {...register("firstName")} />
+            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName?.message as string}</p>}
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="lastname" className="text-accent">Last name</Label>
-            <Input id="lastname" placeholder="Durden" type="text" {...register("lastname")} />
-            {errors.lastname && <p className="text-red-500 text-sm">{errors.lastname?.message as string}</p>}
+            <Label htmlFor="lastName" className="text-accent">Last name</Label>
+            <Input id="lastName" placeholder="Durden" type="text" {...register("lastName")} />
+            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName?.message as string}</p>}
           </LabelInputContainer>
         </div>
 

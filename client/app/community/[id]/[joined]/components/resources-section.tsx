@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Trash2, LinkIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import useAuth from "@/hooks/useAuth"
+import { ResourceUpload } from "./resourceUpload"
 
 type Resource = {
   id: number
@@ -30,10 +32,14 @@ const initialResources: Resource[] = [
   },
 ]
 
+
 export function ResourcesSection() {
   const [resources, setResources] = useState<Resource[]>(initialResources)
   const [newResource, setNewResource] = useState({ title: "", url: "" })
   const [editingId, setEditingId] = useState<number | null>(null)
+  const { user, loading } = useAuth();
+  console.log(user);
+  
 
   const handleAddResource = () => {
     if (newResource.title && newResource.url) {
@@ -65,21 +71,7 @@ export function ResourcesSection() {
         <CardContent className="pt-6">
             <h2 className="text-2xl font-bold mb-4">Shared Resources</h2>
             <div className="space-y-6">
-                <div className="flex space-x-2">
-                    <Input
-                    value={newResource.title}
-                    onChange={(e) => setNewResource({ ...newResource, title: e.target.value })}
-                    placeholder="Resource title"
-                    />
-                    <Input
-                    value={newResource.url}
-                    onChange={(e) => setNewResource({ ...newResource, url: e.target.value })}
-                    placeholder="Resource URL"
-                    />
-                    <Button onClick={editingId !== null ? handleUpdateResource : handleAddResource}>
-                    {editingId !== null ? "Update" : "Add"} Resource
-                    </Button>
-                </div>
+                { user && user.role == "Mentor" &&  <ResourceUpload />}
                 <div className="space-y-4">
                     {resources.map((resource) => (
                     <div key={resource.id} className="flex items-center justify-between p-4 bg-popover shadow-lg rounded-md">
@@ -103,12 +95,12 @@ export function ResourcesSection() {
                         </div>
                         </div>
                         <div>
-                        <Button variant="ghost" size="icon" onClick={() => handleEditResource(resource.id)}>
-                            <Pencil size={16} />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDeleteResource(resource.id)}>
-                            <Trash2 size={16} />
-                        </Button>
+                        {(user && user.role == "Mentor") ? (<>
+                          <Button variant="destructive" size="icon" onClick={() => handleDeleteResource(resource.id)}>
+                              <Trash2 size={16} />
+                          </Button>
+                          </>
+                        ) : (<><Button className="">View</Button></>)}
                         </div>
                     </div>
                     ))}

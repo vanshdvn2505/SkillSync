@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThumbsUp, MessageSquare } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import useAuth from "@/hooks/useAuth"
+import { PostUpload } from "./postUpload"
 
 type Post = {
   id: number
@@ -46,6 +48,7 @@ const initialPosts: Post[] = [
 export function PostsSection() {
   const [posts, setPosts] = useState<Post[]>(initialPosts)
   const [newPost, setNewPost] = useState("")
+  const { user, loading } = useAuth();
 
   const handleAddPost = () => {
     if (newPost.trim()) {
@@ -71,16 +74,7 @@ export function PostsSection() {
           <CardContent className="pt-6">
             <h2 className="text-2xl font-bold mb-4">Community Posts</h2>
             <div className="space-y-6">
-              <div className="space-y-2">
-                <Textarea
-                  value={newPost}
-                  onChange={(e) => setNewPost(e.target.value)}
-                  placeholder="What's on your mind?"
-                  rows={3}
-                  className="placeholder:text-muted"
-                />
-                <Button onClick={handleAddPost}>Post</Button>
-              </div>
+              { user && user.role == 'Mentor' && <PostUpload />}
               <div className="space-y-4">
                 {posts.map((post) => (
                   <div key={post.id} className="p-4 bg-popover shadow-lg rounded-md">

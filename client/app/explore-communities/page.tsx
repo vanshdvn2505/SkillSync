@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar"
 import ExploreCommunities from "./components/explore-communities"
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { Button } from "@/components/ui/button"
-import { CreateCommunityForm } from "./components/createCommunity"
+import CreateCommunityForm from "./components/createCommunityForm"
 
 const placeholders = [
     "What's the first rule of Fight Club?",
@@ -30,7 +30,7 @@ export default function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-evenly items-center text-center mb-8">
@@ -44,7 +44,9 @@ export default function Home() {
             <CreateCommunityForm  />
         </div>
         <Suspense fallback={<ExploreSkeleton />}>
-          <ExploreCommunities />
+          <div className="w-full">
+            <ExploreCommunities />
+          </div>
         </Suspense>
       </main>
     </div>

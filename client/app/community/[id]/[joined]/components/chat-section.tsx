@@ -9,64 +9,41 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Smile, Mic, Send, Paperclip, Play, StopCircle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import EmojiPicker, { Theme, type EmojiClickData } from "emoji-picker-react"
+import { ChatMessage } from "@/types/chat"
+import { User } from "@/types/user"
+import { useMutation } from "@apollo/client"
+import { SEND_CHAT_MESSAGE } from "@/graphql/mutations/chatMutations"
 
-type Message = {
-  id: number
-  user: string
-  content: string
-  timestamp: string
-  type: "text" | "voice"
-}
 
-const initialMessages: Message[] = [
-  {
-    id: 1,
-    user: "Alice",
-    content: "Hey everyone! Excited for the upcoming React workshop! 😃",
-    timestamp: "10:30 AM",
-    type: "text",
-  },
-  {
-    id: 2,
-    user: "Bob",
-    content: "Me too! Does anyone have any good resources to prepare?",
-    timestamp: "10:32 AM",
-    type: "text",
-  },
-  {
-    id: 3,
-    user: "Charlie",
-    content: "I found this great tutorial on React Hooks. I'll share it in the resources section.",
-    timestamp: "10:35 AM",
-    type: "text",
-  },
-  { id: 4, user: "Alice", content: "/voice-message-1.mp3", timestamp: "10:40 AM", type: "voice" },
-]
-
-export function ChatSection() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+export function ChatSection({ chat, user, communityId } : { chat : ChatMessage[], user : User, communityId: string }) {
+  const [messages, setMessages] = useState<ChatMessage[]>(chat)  
   const [newMessage, setNewMessage] = useState("")
   const [isRecording, setIsRecording] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    setMessages(chat)
+  }, [chat])
 
   useEffect(() => {
-        if (scrollAreaRef.current) {
-        scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-        }
-    }   , [scrollAreaRef])
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    }
+  }, [messages])
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const message: Message = {
-        id: messages.length + 1,
-        user: "You",
-        content: newMessage.trim(),
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        type: "text",
-      }
-      setMessages([...messages, message])
+  const [sendMessage] = useMutation(SEND_CHAT_MESSAGE)
+
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !user) return
+
+    try {
+      await sendMessage({
+        variables: { content: newMessage.trim(), senderId: user.id, communityId },
+      })
       setNewMessage("")
+    } catch (error) {
+      console.error("Error Sending Message ", error)
     }
   }
 
@@ -79,19 +56,19 @@ export function ChatSection() {
     // Start recording logic here
   }
 
-  const handleStopRecording = () => {
-    setIsRecording(false)
-    setRecordingTime(0)
-    // Stop recording and send voice message logic here
-    const voiceMessage: Message = {
-      id: messages.length + 1,
-      user: "You",
-      content: "/voice-message-placeholder.mp3", // Replace with actual recorded audio file
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      type: "voice",
-    }
-    setMessages([...messages, voiceMessage])
-  }
+  // const handleStopRecording = () => {
+  //   setIsRecording(false)
+  //   setRecordingTime(0)
+  //   // Stop recording and send voice message logic here
+  //   const voiceMessage: Message = {
+  //     id: messages.length + 1,
+  //     user: "You",
+  //     content: "/voice-message-placeholder.mp3", // Replace with actual recorded audio file
+  //     timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  //     type: "voice",
+  //   }
+  //   setMessages([...messages, voiceMessage])
+  // }
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -109,20 +86,20 @@ export function ChatSection() {
             <div className="h-[600px] flex flex-col rounded-lg overflow-hidden">
                 <ScrollArea className="flex-grow p-4 bg-foreground border-none outline-none" ref={scrollAreaRef}>
                     {messages.map((message) => (
-                    <div key={message.id} className={`mb-4 last:mb-0 text-background ${message.user === "You" ? "text-right" : ""}`}>
-                        <div className={`flex items-start ${message.user === "You" ? "justify-end" : ""}`}>
-                        {message.user !== "You" && (
+                    <div key={message.id} className={`mb-4 last:mb-0 text-background ${message.sender.id === user.id ? "text-right" : ""}`}>
+                        <div className={`flex items-start ${message.sender.id === user.id ? "justify-end" : ""}`}>
+                        {message.sender.id !== user.id && (
                             <Avatar className="w-8 h-8 mr-2">
-                            <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${message.user}`} />
-                            <AvatarFallback>{message.user[0]}</AvatarFallback>
+                            <AvatarImage src={message.sender.profileImageURL || "https://github.com/shadcn.png"} />
+                            <AvatarFallback>{message.sender.profileImageURL || "https://github.com/shadcn.png" }</AvatarFallback>
                             </Avatar>
                         )}
-                        <div className={`rounded-lg p-3 text-primary-foreground ${message.user === "You" ? "bg-secondary text-primary-foreground" : "bg-popover"}`}>
+                        <div className={`rounded-lg p-3 text-primary-foreground ${message.sender.id === user.id ? "bg-secondary text-primary-foreground" : "bg-popover"}`}>
                             <div className="flex items-baseline mb-1">
-                            <span className="font-semibold mr-2 text-primary-foreground">{message.user}</span>
-                            <span className="text-xs text-muted">{message.timestamp}</span>
+                            <span className="font-semibold mr-2 text-primary-foreground">{message.sender.firstName}</span>
+                            <span className="text-xs text-muted">{message.createdAt}</span>
                             </div>
-                            {message.type === "text" ? (
+                            {typeof message.content === "string" ? (
                             <p className="text-sm">{message.content}</p>
                             ) : (
                             <div className="flex items-center space-x-2">
@@ -136,10 +113,10 @@ export function ChatSection() {
                             </div>
                             )}
                         </div>
-                        {message.user === "You" && (
+                        {message.sender.id === user.id && (
                             <Avatar className="w-8 h-8 ml-2">
-                            <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${message.user}`} />
-                            <AvatarFallback>{message.user[0]}</AvatarFallback>
+                            <AvatarImage src={message.sender.profileImageURL || "https://github.com/shadcn.png"} />
+                            <AvatarFallback>{message.sender.profileImageURL || "https://github.com/shadcn.png"}</AvatarFallback>
                             </Avatar>
                         )}
                         </div>
@@ -166,14 +143,14 @@ export function ChatSection() {
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type your message..."
                         className="flex-grow placeholder:text-muted"
-                        onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                        onKeyDown ={(e) => e.key === "Enter" && handleSendMessage()}
                     />
                     {isRecording ? (
                         <div className="flex items-center space-x-2">
                         <span className="text-sm text-red-500">{recordingTime}s</span>
-                        <Button variant="destructive" size="icon" onClick={handleStopRecording}>
+                        {/* <Button variant="destructive" size="icon" onClick={handleStopRecording}>
                             <StopCircle className="h-5 w-5" />
-                        </Button>
+                        </Button> */}
                         </div>
                     ) : (
                         <Button variant="ghost" size="icon" className="h-9 w-9" onClick={handleStartRecording}>

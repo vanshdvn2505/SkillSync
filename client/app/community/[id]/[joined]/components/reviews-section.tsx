@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, StarHalf } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import useAuth from "@/hooks/useAuth"
 
 type Review = {
   id: number
@@ -42,6 +43,7 @@ const initialReviews: Review[] = [
 export function ReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>(initialReviews)
   const [newReview, setNewReview] = useState({ content: "", rating: 0 })
+  const { user, loading } = useAuth();
 
   const handleAddReview = () => {
     if (newReview.content.trim() && newReview.rating > 0) {
@@ -76,7 +78,7 @@ export function ReviewsSection() {
       <CardContent className="pt-6">
         <h2 className="text-2xl font-bold mb-4">Community Reviews</h2>
         <div className="space-y-6">
-          <div className="space-y-2">
+          {user && user.role == "Learner" && <div className="space-y-2">
             <div className="flex space-x-2 mb-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Button
@@ -96,7 +98,7 @@ export function ReviewsSection() {
               rows={3}
             />
             <Button onClick={handleAddReview}>Submit Review</Button>
-          </div>
+          </div>}
           <div className="space-y-4">
             {reviews.map((review) => (
               <div key={review.id} className="p-4 bg-popover shadow-lg rounded-md">

@@ -25,21 +25,21 @@ export function RightSidebar() {
             <ul className="space-y-2">
               {upcomingMeetings.map((meeting, index) => (
                 <>
-                  <div className="flex flex-col space-y-5 shadow-sm">
-                  <div className="shadow-md px-4 py-2 rounded-md">
-                    <li key={index} className="flex justify-between text-sm">
-                      <span className="text-accent">{meeting.title}</span>
-                      <span className="text-muted-foreground">
-                        {meeting.time}
-                      </span>
-                    </li>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-sm text-muted-foreground">Community one</span>
-                      <Button className="bg-primary py-2 px-2 rounded-lg text-sm" >
-                        Join Now
-                      </Button>
+                  <div key={index} className="flex flex-col space-y-5 shadow-sm">
+                    <div className="shadow-md px-4 py-2 rounded-md">
+                      <li key={index} className="flex justify-between text-sm">
+                        <span className="text-accent">{meeting.title}</span>
+                        <span className="text-muted-foreground">
+                          {meeting.time}
+                        </span>
+                      </li>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-sm text-muted-foreground">Community one</span>
+                        <Button className="bg-primary py-2 px-2 rounded-lg text-sm" >
+                          Join Now
+                        </Button>
+                      </div>
                     </div>
-                  </div>
                   </div>
                 </>
               ))}

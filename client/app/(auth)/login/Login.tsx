@@ -9,14 +9,22 @@ import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import AuthHeader from "../components/auth-header";
+import { loginSchema } from "@/types/zodSchema/loginSchema-zod";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "@/graphql/mutations/authMutations";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginFormDemo() {
+
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const [loginUser, { data, loading, error }] = useMutation(LOGIN);
+
   const {
     register,
     handleSubmit,
@@ -25,8 +33,27 @@ export default function LoginFormDemo() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     console.log("Form submitted", data);
+    try {
+      const response = await loginUser({ variables: data });
+      
+      console.log(response);
+      toast({
+        title: "Login Successfull",
+        duration: 1000,
+      })
+      setTimeout(() => {
+        router.push('/home');
+      }, 1000)
+      
+    } catch (error) {
+        toast({
+          title: "Login Up Failed",
+          description: "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+    }
   };
 
   return (
