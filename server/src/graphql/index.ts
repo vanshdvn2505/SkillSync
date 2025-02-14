@@ -6,7 +6,7 @@ const createApolloGraphQLServer = async () => {
     const typeDefs = gql`
     
         ${User.typeDefs}
-
+        
         type Query {
             ${User.queries}
         }

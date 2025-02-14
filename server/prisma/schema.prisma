@@ -13,14 +13,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  learner
+  mentor
+}
+
 model User {
-  id              String  @id @default(uuid())
-  firstName       String  @map("first_name")
-  lastName        String?  @map("last_name")
-  profileImageURL String? @map("profile_image_url")
-  email           String  @unique
+  id              String      @id @default(uuid())
+  firstName       String      @map("first_name")
+  lastName        String?     @map("last_name") @default("")
+  profileImageURL String?     @map("profile_image_url")
+  email           String      @unique
   password        String
   salt            String
+  isVerified      Boolean?    @default(false)
+  role            Role        @default(learner)
+  communities     Community[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt @default(now())
 
   @@map("users")
+}
+
+model Community {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String? @default("")
+  profileImageURL String? @map("profile_image_url")
+  skills String[] @default([])
+  rating Float @default(0.0)
+  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String
+  createdAt   DateTime @default(now())
 }
