@@ -6,6 +6,7 @@ export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "im
 export const communitySchema = z.object({
   name: z.string().min(1, "Required").max(50, "Community Length is Too Long"),
   description: z.string().max(500, "Description is Too Long").optional(),
+  capacity: z.number().min(30, "Minimum Size is 30"),
   imageType: z.enum(["file", "url"]),
   profileImage: z.union([
     z.object({

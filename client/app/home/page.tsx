@@ -6,18 +6,28 @@ import {  Navbar } from "../../components/Navbar";
 import LeftSidebar from "./components/left-sidebar";
 import { MentorPosts } from "./components/mentor-posts";
 import { RightSidebar } from "./components/right-sidebar";
+import { useQuery } from "@apollo/client";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import useAuth from "@/hooks/useAuth";
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
+    
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2059); 
-    return () => clearTimeout(timer);
-  }, []);
+  // if(loading){
+  //   return <div>Loading...</div>
+  // }
 
-  if (showSplash) {
-    return <SplashScreen />;
-  }
+  // const [showSplash, setShowSplash] = useState(true);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setShowSplash(false), 2059); 
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  // if (showSplash) {
+  //   return <SplashScreen />;
+  // }
 
   return (
     <div className="min-h-screen min-w-screen flex flex-col w-full bg-background ">

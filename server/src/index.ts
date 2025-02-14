@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { expressMiddleware } from '@apollo/server/express4';
 import createApolloGraphQLServer from './graphql/index.js';
 import UserService from './services/user.js';
+import { createServer } from 'http';
 
 dotenv.config();
 
@@ -12,16 +13,17 @@ const init = async () => {
     const PORT = Number(process.env.PORT) || 5000;
 
     const app = express();
+    app.use(
+      cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+        methods: "GET,POST,PUT,DELETE,OPTIONS",
+        allowedHeaders: "Content-Type,Authorization",
+      })
+    );
+    app.options("*", cors());
     app.use(express.json());
     app.use(cookieParser()); 
-    app.use(
-        cors({
-          origin: "http://localhost:3000",
-          credentials: true,
-          methods: "GET,POST,PUT,DELETE,OPTIONS",
-          allowedHeaders: "Content-Type,Authorization",
-        })
-    );
     
 
     
@@ -29,28 +31,29 @@ const init = async () => {
         res.send("Server is Running"); 
     })
 
-    const gqlServer = await createApolloGraphQLServer();
+    const httpServer = createServer(app);
+
+    const { gqlServer } = await createApolloGraphQLServer(httpServer);
+  
     app.use('/graphql',
         expressMiddleware(gqlServer, {
             context: async ({ req, res }) => {
-              try {
-                const token = req.cookies?.token;
-                if (token) {
-                  const user = UserService.decodeJWTToken(token);
-                  
-                  return { user, req, res };
-                }
-                return { req, res };
-              } catch (error) {
-                console.error("Token decoding failed:", error);
-                return { req, res };
-              }
-            },
+        const token = req.cookies?.token;
+        let user = null;
+        if (token) {
+          try {
+            user = UserService.decodeJWTToken(token);
+          } catch (err) {
+            console.error('Token decoding failed:', err);
+          }
+        }
+        return { req, res, user };
+      },
           }) as unknown as (req: Request, res: Response, next: NextFunction) => void);
 
-    app.listen(PORT, () => {
-        console.log(`Server is listening on PORT: ${PORT}`);
-        
+    httpServer.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`📡 WebSocket running on ws://localhost:${PORT}/graphql`);
     })
 }
 

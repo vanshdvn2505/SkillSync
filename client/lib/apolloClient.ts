@@ -1,15 +1,49 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
-import { registerApolloClient } from '@apollo/experimental-nextjs-app-support/rsc'
+'use client';
 
-export const { getClient } = registerApolloClient(() => {
-  return new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-      // this needs to be an absolute url, as relative urls cannot be used in SSR
-      uri: 'http://localhost:7000/graphql'
-      // you can disable result caching here if you want to
-      // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
-      // fetchOptions: { cache: "no-store" },
-    })
-  })
+import {  HttpLink,  ApolloLink, split } from '@apollo/client';
+import { SSRMultipartLink, InMemoryCache, ApolloClient} from '@apollo/experimental-nextjs-app-support';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { DefinitionNode, DocumentNode, OperationDefinitionNode } from 'graphql';
+
+const httpLink = new HttpLink({
+  uri: 'http://localhost:7000/graphql',
+  credentials: 'include'
 })
+
+const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(
+  createClient({
+    url: 'ws://localhost:7000/graphql',
+    connectionParams: {
+      credentials: 'include',
+    }
+  })
+) : null;
+
+const isSubscription = (query: DefinitionNode | null) : query is OperationDefinitionNode => {
+  return (
+    query?.kind === 'OperationDefinition' && query.operation === 'subscription'
+  )
+}
+
+const link = typeof window !== 'undefined' && wsLink ? split(
+  ({ query } : { query : DocumentNode }) => {
+    const definition = getMainDefinition(query);
+    return (
+      isSubscription(definition)
+    );
+  },
+  wsLink,
+  httpLink
+) : httpLink;
+
+export const client = new ApolloClient({
+  link:
+    typeof window === 'undefined'
+      ? ApolloLink.from([
+          new SSRMultipartLink({ stripDefer: true }).concat(httpLink)
+        ])
+      : link,
+  cache: new InMemoryCache(),
+});

@@ -19,30 +19,49 @@ enum Role {
 }
 
 model User {
-  id              String      @id @default(uuid())
-  firstName       String      @map("first_name")
-  lastName        String?     @map("last_name") @default("")
-  profileImageURL String?     @map("profile_image_url")
-  email           String      @unique
-  password        String
-  salt            String
-  isVerified      Boolean?    @default(false)
-  role            Role        @default(learner)
-  communities     Community[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt @default(now())
+  id                 String        @id @default(uuid())
+  firstName          String        @map("first_name")
+  lastName           String?       @default("") @map("last_name")
+  profileImageURL    String?       @map("profile_image_url")
+  email              String        @unique
+  password           String
+  salt               String
+  isVerified         Boolean?      @default(false)
+  role               String        @default("learner")
+  gender             String        @default("Other")
+  joinedCommunities  Community[]   @relation("JoinedCommunities")
+  createdCommunities Community[]   @relation("UserCommunities")
+  chatMessage        ChatMessage[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @default(now()) @updatedAt
 
   @@map("users")
 }
 
 model Community {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String? @default("")
-  profileImageURL String? @map("profile_image_url")
-  skills String[] @default([])
-  rating Float @default(0.0)
-  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String
-  createdAt   DateTime @default(now())
+  id              String        @id @default(uuid())
+  name            String        @unique
+  description     String?       @default("")
+  capacity        Int
+  maxCapacity     Int           @default(100)
+  profileImageURL String?       @map("profile_image_url") @default("https://github.com/shadcn.png")
+  skills          String[]      @default([])
+  rating          Float         @default(0.0)
+  creator         User          @relation(name: "UserCommunities", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById     String
+  chat            ChatMessage[]
+  createdAt       DateTime      @default(now())
+  members         User[]        @relation("JoinedCommunities")
+}
+
+model ChatMessage {
+  id          String    @id @default(uuid())
+  content     String
+  createdAt   DateTime  @default(now())
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  sender      User      @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId    String
+
+  @@map("chatMessage")
 }

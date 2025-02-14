@@ -1,30 +1,43 @@
-"use client"; // This ensures the code runs only on the client side
+"use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useMutation } from "@apollo/client";
-import { gql } from "graphql-tag";
+import { useMutation, gql } from "@apollo/client";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { VERIFY_EMAIL_MUTATION } from "@/graphql/mutations/authMutations";
 
-const VERIFY_EMAIL_MUTATION = gql`
-  mutation VerifyEmail($token: String!) {
-    verifyEmail(token: $token)
-  }
-`;
 
 export default function Verify() {
   const { token } = useParams();
-  const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL_MUTATION, {
-    variables: { token },
-  });
+  const router = useRouter();
+  const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL_MUTATION);
 
   useEffect(() => {
     if (token) {
-      verifyEmail();
+      verifyEmail({ variables: { token } })
+        .then(() => {
+          toast.success("Email verified! Please sign in.");
+          setTimeout(() => {
+            router.push("/login"); // Redirect to sign-in page
+          }, 2000);
+        })
+        .catch(() => toast.error("Verification failed. Please try again."));
     }
   }, [token]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return <div className="text-primary-foreground absolute bottom-80">{data ? <p>Email Verified Successfully</p> : <p>Verification Failed</p>}</div>;
+  return (
+    <div className="w-full flex flex-col items-center justify-center h-screen bg-background text-primary-foreground">
+      {loading ? (
+        <div className="flex flex-col items-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+          <p className="mt-4 text-lg">Verifying your email...</p>
+        </div>
+      ) : error ? (
+        <p className="text-red-500 text-lg">Error: {error.message}</p>
+      ) : (
+        <p className="text-green-500 text-lg">Email Verified Successfully! Redirecting...</p>
+      )}
+    </div>
+  );
 }

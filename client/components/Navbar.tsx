@@ -6,6 +6,7 @@ import { Search, Menu, X, Bell, Calendar, FileText, Flame, Moon, LogOut } from "
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,12 +14,23 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { user, loading } = useAuth();
+  
   const tabs = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
+    { name: "Home", path: "/home" },
     { name: "Profile", path: "/profile" },
-    { name: "Explore", path: "/explore" },
-    { name: "Your Communities", path: "/your-communities" },
+    ...(user && user.role === "Mentor"
+      ? [
+          { name: "Communities", path: "/communities" },
+          { name: "Post", path: "/post" },
+        ]
+    : []),
+    ...(user && user.role === "Learner"
+      ? [
+          { name: "Explore", path: "/explore-communities" },
+        ]
+    : []),
+    { name: "About", path: "/about" },
   ];
 
   return (
@@ -71,7 +83,7 @@ export function Navbar() {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">John Doe</p>
+                    <p className="font-semibold">{user.firstName + " " + user.lastName}</p>
                     <p className="text-sm text-muted-foreground">@johndoe</p>
                   </div>
                 </div>

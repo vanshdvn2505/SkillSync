@@ -1,4 +1,7 @@
 export const queries = `#graphql
-    getUserToken(email: String!, password: String!): String
     getCurrentLoggedInUser: User
+    getCommunityMembers(communityId: String!): [User]
+    getJoinedCommunities(userId: String!): [Community!]!
+    getCommunities(userId: String!): [Community!]!
+    getCommunityById(communityId: String!): Community!
 `;

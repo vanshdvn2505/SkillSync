@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Community" ADD COLUMN     "maxCapacity" INTEGER NOT NULL DEFAULT 100,
+ALTER COLUMN "capacity" DROP DEFAULT;

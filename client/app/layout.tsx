@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { ApolloWrapper } from "@/lib/apolloWrapper";
+import { Toaster } from "@/components/ui/toaster";
 
 
 const geistSans = Geist({
@@ -34,7 +35,8 @@ export default function RootLayout({
       >
         <ApolloWrapper>
           <ThemeProvider>
-            {children}
+              <Toaster />
+                {children}
           </ThemeProvider>
         </ApolloWrapper>
       </body>
