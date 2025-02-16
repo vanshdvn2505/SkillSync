@@ -1,6 +1,6 @@
 import { PubSub } from "graphql-subscriptions";
 import { prismaClient } from "../../lib/db";
-const pubsub = new PubSub();
+export const pubsub = new PubSub();
 const MESSAGE_ADDED = "MESSAGE_ADDED";
 
 const queries = {

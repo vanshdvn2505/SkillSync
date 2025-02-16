@@ -69,7 +69,7 @@ export default function CommunityTabs({ community }: { community: Community }) {
         <AboutSection about = {community.description} />
       </TabsContent>
       <TabsContent value="meetings">
-        <MeetingsSection />
+        <MeetingsSection communityId={community.id} userId={user.id} role={user.role} />
       </TabsContent>
       <TabsContent value="chat">
         <ChatSection chat = { chatData?.getCommunityChat } user = { user } communityId = {community.id} />

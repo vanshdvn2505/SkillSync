@@ -18,6 +18,18 @@ enum Role {
   mentor
 }
 
+enum MeetingStatus {
+  SCHEDULED
+  ACTIVE
+  ENDED
+}
+
+enum MeetingLevel {
+  Beginner
+  Intermidiate
+  Advanced
+}
+
 model User {
   id                 String        @id @default(uuid())
   firstName          String        @map("first_name")
@@ -34,6 +46,9 @@ model User {
   chatMessage        ChatMessage[]
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @default(now()) @updatedAt
+  meetingsScheduled  Meeting[]     @relation("MentorMeetings")
+  attendingMeetings  Meeting[]     @relation("MeetingParticipants")
+  meetingAttendee    Meeting[]     @relation("MeetingAttendees")
 
   @@map("users")
 }
@@ -44,7 +59,7 @@ model Community {
   description     String?       @default("")
   capacity        Int
   maxCapacity     Int           @default(100)
-  profileImageURL String?       @map("profile_image_url") @default("https://github.com/shadcn.png")
+  profileImageURL String?       @default("https://github.com/shadcn.png") @map("profile_image_url")
   skills          String[]      @default([])
   rating          Float         @default(0.0)
   creator         User          @relation(name: "UserCommunities", fields: [createdById], references: [id], onDelete: Cascade)
@@ -52,6 +67,7 @@ model Community {
   chat            ChatMessage[]
   createdAt       DateTime      @default(now())
   members         User[]        @relation("JoinedCommunities")
+  meetings        Meeting[]
 }
 
 model ChatMessage {
@@ -64,4 +80,24 @@ model ChatMessage {
   senderId    String
 
   @@map("chatMessage")
+}
+
+model Meeting {
+  id           String        @id @default(uuid())
+  title        String
+  description  String?
+  scheduledAt  DateTime
+  duration     Float?
+  startedAt    DateTime?
+  mentorId     String
+  mentor       User          @relation(name: "MentorMeetings", fields: [mentorId], references: [id])
+  tags         String[]
+  attendees    User[]        @relation("MeetingAttendees")
+  maxAttendees Int           @default(100)
+  status       MeetingStatus @default(SCHEDULED)
+  level        MeetingLevel  @default(Beginner)
+  isStarted    Boolean       @default(false)
+  communityId  String
+  community    Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  participants User[]        @relation("MeetingParticipants")
 }
