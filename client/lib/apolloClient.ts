@@ -8,7 +8,7 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { DefinitionNode, DocumentNode, OperationDefinitionNode } from 'graphql';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:7000/graphql',
+  uri: 'http://localhost:7001/graphql',
   credentials: 'include'
 })
 

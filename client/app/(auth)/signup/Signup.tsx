@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,8 @@ import { signupSchema } from "@/types/zodSchema/signupSchema-zod";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { SIGNUP } from "@/graphql/mutations/authMutations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function SignupFormDemo() {
 

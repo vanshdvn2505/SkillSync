@@ -20,7 +20,7 @@ import { MESSAGE_ADDED_SUBSCRIPTION } from "@/graphql/subscriptions/chatSubscrip
 export default function CommunityTabs({ community }: { community: Community }) {
   const [activeTab, setActiveTab] = useState("about")
   const { user, loading } = useAuth();
-  
+  console.log("User", user);
   const [members, setMembers] = useState<Member[]>(community.members)
 
   const handleRemoveMember = (id: string) => {
@@ -56,7 +56,7 @@ export default function CommunityTabs({ community }: { community: Community }) {
 
   return (
     <Tabs defaultValue="about" onValueChange={setActiveTab}>
-      <TabsList className="grid w-full grid-cols-7 bg-foreground text-muted">
+      <TabsList className={`grid w-full ${user.role === "Learner" ? "grid-cols-6": "grid-cols-7"} bg-foreground text-muted`}>
         <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:text-primary-foreground" value="about">About</TabsTrigger>
         <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:text-primary-foreground" value="meetings">Meetings</TabsTrigger>
         <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:text-primary-foreground" value="chat">Chat</TabsTrigger>

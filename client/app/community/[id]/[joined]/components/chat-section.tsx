@@ -1,171 +1,194 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Smile, Mic, Send, Paperclip, Play, StopCircle } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import EmojiPicker, { Theme, type EmojiClickData } from "emoji-picker-react"
-import { ChatMessage } from "@/types/chat"
-import { User } from "@/types/user"
-import { useMutation } from "@apollo/client"
-import { SEND_CHAT_MESSAGE } from "@/graphql/mutations/chatMutations"
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Smile, Send } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import EmojiPicker, { Theme, type EmojiClickData } from "emoji-picker-react";
+import { ChatMessage } from "@/types/chat";
+import { User } from "@/types/user";
+import { useMutation } from "@apollo/client";
+import { SEND_CHAT_MESSAGE } from "@/graphql/mutations/chatMutations";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
+dayjs.extend(relativeTime);
 
-export function ChatSection({ chat, user, communityId } : { chat : ChatMessage[], user : User, communityId: string }) {
-  const [messages, setMessages] = useState<ChatMessage[]>(chat)  
-  const [newMessage, setNewMessage] = useState("")
-  const [isRecording, setIsRecording] = useState(false)
-  const [recordingTime, setRecordingTime] = useState(0)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
-  
+export function ChatSection({
+  chat,
+  user,
+  communityId,
+}: {
+  chat: ChatMessage[];
+  user: User;
+  communityId: string;
+}) {
+  const [messages, setMessages] = useState<ChatMessage[]>(chat);
+  const [newMessage, setNewMessage] = useState("");
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    setMessages(chat)
-  }, [chat])
+    setMessages(chat);
+  }, [chat]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
-  }, [messages])
+  }, [messages]);
 
-  const [sendMessage] = useMutation(SEND_CHAT_MESSAGE)
+  const [sendMessage] = useMutation(SEND_CHAT_MESSAGE);
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !user) return
+    if (!newMessage.trim() || !user) return;
 
     try {
       await sendMessage({
-        variables: { content: newMessage.trim(), senderId: user.id, communityId },
-      })
-      setNewMessage("")
+        variables: {
+          content: newMessage.trim(),
+          senderId: user.id,
+          communityId,
+        },
+      });
+      const audio = new Audio("/sounds/send.mp3");
+      audio.play();
+      setNewMessage("");
     } catch (error) {
-      console.error("Error Sending Message ", error)
+      console.error("Error Sending Message ", error);
     }
-  }
+  };
 
-  const handleEmojiClick = (emojiData: EmojiClickData, event: MouseEvent) => {
-    setNewMessage((prevMessage) => prevMessage + emojiData.emoji)
-  }
-
-  const handleStartRecording = () => {
-    setIsRecording(true)
-    // Start recording logic here
-  }
-
-  // const handleStopRecording = () => {
-  //   setIsRecording(false)
-  //   setRecordingTime(0)
-  //   // Stop recording and send voice message logic here
-  //   const voiceMessage: Message = {
-  //     id: messages.length + 1,
-  //     user: "You",
-  //     content: "/voice-message-placeholder.mp3", // Replace with actual recorded audio file
-  //     timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-  //     type: "voice",
-  //   }
-  //   setMessages([...messages, voiceMessage])
-  // }
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (isRecording) {
-      interval = setInterval(() => {
-        setRecordingTime((prevTime) => prevTime + 1)
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [isRecording])
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setNewMessage((prevMessage) => prevMessage + emojiData.emoji);
+  };
 
   return (
     <Card className="bg-foreground text-primary-foreground border-none">
-        <CardContent className="pt-6">
-            <div className="h-[600px] flex flex-col rounded-lg overflow-hidden">
-                <ScrollArea className="flex-grow p-4 bg-foreground border-none outline-none" ref={scrollAreaRef}>
-                    {messages.map((message) => (
-                    <div key={message.id} className={`mb-4 last:mb-0 text-background ${message.sender.id === user.id ? "text-right" : ""}`}>
-                        <div className={`flex items-start ${message.sender.id === user.id ? "justify-end" : ""}`}>
-                        {message.sender.id !== user.id && (
-                            <Avatar className="w-8 h-8 mr-2">
-                            <AvatarImage src={message.sender.profileImageURL || "https://github.com/shadcn.png"} />
-                            <AvatarFallback>{message.sender.profileImageURL || "https://github.com/shadcn.png" }</AvatarFallback>
-                            </Avatar>
-                        )}
-                        <div className={`rounded-lg p-3 text-primary-foreground ${message.sender.id === user.id ? "bg-secondary text-primary-foreground" : "bg-popover"}`}>
-                            <div className="flex items-baseline mb-1">
-                            <span className="font-semibold mr-2 text-primary-foreground">{message.sender.firstName}</span>
-                            <span className="text-xs text-muted">{message.createdAt}</span>
-                            </div>
-                            {typeof message.content === "string" ? (
-                            <p className="text-sm">{message.content}</p>
-                            ) : (
-                            <div className="flex items-center space-x-2">
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <Play className="h-4 w-4" />
-                                </Button>
-                                <div className="h-1 bg-gray-300 rounded-full flex-grow">
-                                <div className="h-1 bg-blue-500 rounded-full w-1/3"></div>
-                                </div>
-                                <span className="text-xs">0:30</span>
-                            </div>
-                            )}
-                        </div>
-                        {message.sender.id === user.id && (
-                            <Avatar className="w-8 h-8 ml-2">
-                            <AvatarImage src={message.sender.profileImageURL || "https://github.com/shadcn.png"} />
-                            <AvatarFallback>{message.sender.profileImageURL || "https://github.com/shadcn.png"}</AvatarFallback>
-                            </Avatar>
-                        )}
-                        </div>
-                    </div>
-                    ))}
-                </ScrollArea>
-                <div className="p-4 bg-foreground border-t-[1px] border-[#464646]">
-                    <div className="flex items-center space-x-2">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-9 w-9">
-                            <Smile className="h-5 w-5" />
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0 ml-5 border-none">
-                            <EmojiPicker theme={Theme.DARK} className="border-none" onEmojiClick={handleEmojiClick} />
-                        </PopoverContent>
-                    </Popover>
-                    <Button variant="ghost" size="icon" className="h-9 w-9">
-                        <Paperclip className="h-5 w-5" />
-                    </Button>
-                    <Input
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type your message..."
-                        className="flex-grow placeholder:text-muted"
-                        onKeyDown ={(e) => e.key === "Enter" && handleSendMessage()}
-                    />
-                    {isRecording ? (
-                        <div className="flex items-center space-x-2">
-                        <span className="text-sm text-red-500">{recordingTime}s</span>
-                        {/* <Button variant="destructive" size="icon" onClick={handleStopRecording}>
-                            <StopCircle className="h-5 w-5" />
-                        </Button> */}
-                        </div>
-                    ) : (
-                        <Button variant="ghost" size="icon" className="h-9 w-9" onClick={handleStartRecording}>
-                        <Mic className="h-5 w-5" />
-                        </Button>
-                    )}
-                    <Button onClick={handleSendMessage}>
-                        <Send className="h-5 w-5" />
-                    </Button>
-                    </div>
-                </div>
-            </div>
-        </CardContent>
-    </Card>
-   
-  )
-}
+      <CardContent className="pt-6">
+        <div className="h-[600px] flex flex-col rounded-lg overflow-hidden">
+          <ScrollArea
+            className="flex-grow p-4 bg-foreground border-none outline-none scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
+            ref={scrollAreaRef}
+          >
+            {messages.map((message, index) => {
+              const isCurrentUser = message.sender.id === user.id;
 
+              return (
+                <div key={message.id} className="mb-2 text-background">
+                  <div
+                    className={`flex items-start group ${
+                      isCurrentUser ? "justify-end" : ""
+                    }`}
+                  >
+                    {!isCurrentUser && (
+                      <Avatar className="w-8 h-8 mr-2">
+                        <AvatarImage
+                          src={
+                            message.sender.profileImageURL ||
+                            "https://github.com/shadcn.png"
+                          }
+                        />
+                        <AvatarFallback>
+                          {message.sender.firstName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+
+                    <div className="relative flex items-center">
+                      <div
+                        className={`rounded-lg p-3 text-primary-foreground max-w-xs md:max-w-md ${
+                          isCurrentUser
+                            ? "bg-gradient-to-r border border-primary/10 from-primary/70 to-secondary/40 text-accent backdrop-blur-xl bg-opacity-10 shadow-lg"
+                            : "bg-white/20 backdrop-blur-lg shadow-lg"
+                        }`}
+                      >
+                        <p className="text-sm">{message.content}</p>
+                      </div>
+                    </div>
+
+                    {isCurrentUser && (
+                      <Avatar className="w-8 h-8 ml-2">
+                        <AvatarImage
+                          src={
+                            message.sender.profileImageURL ||
+                            "https://github.com/shadcn.png"
+                          }
+                        />
+                        <AvatarFallback>
+                          {message.sender.firstName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </ScrollArea>
+
+          {/* Custom Chat Input Box */}
+          <div className="p-4 bg-foreground border-t-[1px] border-[#464646] w-full">
+            <div className="flex items-center space-x-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-[50px] w-[50px] rounded-full hover:scale-105 active:scale-95 hover:bg-gradient-to-r from-primary to-secondary"
+                  >
+                    <Smile className="h-7 w-7 text-white" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0 ml-5 border-none">
+                  <EmojiPicker
+                    theme={Theme.DARK}
+                    className="border-none"
+                    onEmojiClick={handleEmojiClick}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {/* Cool Input */}
+              <div className="w-full flex items-center space-x-4">
+                <div className="relative w-full">
+                  {/* Label (Positioned inside the input field) */}
+                  <label
+                    htmlFor="chatInput"
+                    className="absolute text-xs font-bold text-primary top-[-8px] left-[12px] bg-foreground px-1"
+                  >
+                    Message:
+                  </label>
+
+                  {/* Input Field */}
+                  <input
+                    type="text"
+                    id="chatInput"
+                    placeholder="Write here..."
+                    className="w-full h-[44px] px-3 border-2 border-primary/50 rounded-md bg-foreground text-white focus:outline-none"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  />
+                </div>
+
+                {/* Send Button (Aligned with Input) */}
+                <Button
+                  className="h-[50px] w-[50px] rounded-full bg-transparent flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+                  onClick={handleSendMessage}
+                >
+                  <Send className="h-7 w-7 text-white" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
