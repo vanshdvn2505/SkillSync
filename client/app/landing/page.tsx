@@ -8,8 +8,8 @@ import LearningPath from './components/LearningPath'
 import Potential from './components/Potential'
 import Footer from './components/Footer'
 import { useQuery } from '@apollo/client'
-import { CURRENT_USER } from '../graphql/queries/authQueries'
 import { useRouter } from 'next/navigation'
+import { CURRENT_USER } from '@/graphql/queries/authQueries'
 
 function page() {
 
