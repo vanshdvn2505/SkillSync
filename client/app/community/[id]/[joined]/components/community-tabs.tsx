@@ -20,7 +20,6 @@ import { MESSAGE_ADDED_SUBSCRIPTION } from "@/graphql/subscriptions/chatSubscrip
 export default function CommunityTabs({ community }: { community: Community }) {
   const [activeTab, setActiveTab] = useState("about")
   const { user, loading } = useAuth();
-  console.log("User", user);
   const [members, setMembers] = useState<Member[]>(community.members)
 
   const handleRemoveMember = (id: string) => {
@@ -75,7 +74,7 @@ export default function CommunityTabs({ community }: { community: Community }) {
         <ChatSection chat = { chatData?.getCommunityChat } user = { user } communityId = {community.id} />
       </TabsContent>
       <TabsContent value="resources">
-        <ResourcesSection />
+        <ResourcesSection mentorId={user.id} communityId={community.id} />
       </TabsContent>
       <TabsContent value="posts">
         <PostsSection />

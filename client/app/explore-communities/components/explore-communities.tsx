@@ -65,14 +65,12 @@ import { Community } from "@/types/community"
 export default function ExploreCommunities() {
 
   const { user, loading: userLoaing } = useAuth();
-  console.log(user);
 
   const {data, loading: communitiesLoading, error }  = useQuery(GET_COMMUNITIES, {
     variables: { userId: user?.id},
     skip: !user,
     fetchPolicy: 'cache-first',
   });
-  console.log(data);
   const communities = data?.getCommunities || [];
 
   return (
@@ -106,7 +104,7 @@ export default function ExploreCommunities() {
               </span>
               <span className="flex items-center">
                 <Calendar size={16} className="mr-1" />
-                {community.upcomingMeetings || 0} upcoming
+                {community.meetings.length || 0} upcoming
               </span>
             </div>
             <div className="flex flex-wrap gap-2">

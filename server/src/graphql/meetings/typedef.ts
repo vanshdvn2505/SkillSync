@@ -1,5 +1,7 @@
 export const typeDefs = `#graphql
     
+    scalar GraphQLJSONObject
+
     enum MeetingStatus {
         SCHEDULED
         ACTIVE

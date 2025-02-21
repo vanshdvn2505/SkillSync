@@ -49,6 +49,7 @@ model User {
   meetingsScheduled  Meeting[]     @relation("MentorMeetings")
   attendingMeetings  Meeting[]     @relation("MeetingParticipants")
   meetingAttendee    Meeting[]     @relation("MeetingAttendees")
+  resources          Resource[]    
 
   @@map("users")
 }
@@ -68,6 +69,7 @@ model Community {
   createdAt       DateTime      @default(now())
   members         User[]        @relation("JoinedCommunities")
   meetings        Meeting[]
+  resources       Resource[]    
 }
 
 model ChatMessage {
@@ -100,4 +102,17 @@ model Meeting {
   communityId  String
   community    Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
   participants User[]        @relation("MeetingParticipants")
+}
+
+model Resource {
+  id           String        @id @default(uuid())
+  title        String
+  fileUrl String @default("")
+  tags String[]
+  communityId   String
+  community     Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  mentorId      String
+  mentor        User      @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
 }

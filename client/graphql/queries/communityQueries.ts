@@ -16,12 +16,6 @@ export const GET_JOINED_COMMUNITIES = gql `
     }
 `;
 
-export const LEAVE_COMMUNITY = gql `
-    query leaveCommunity($userId: String!, $communityId: String!) {
-        leaveCommunity(userId: $userId, communityId: $communityId)
-    }
-`;
-
 export const GET_COMMUNITIES = gql`
     query getCommunities($userId: String!) {
         getCommunities(userId: $userId) {
@@ -43,6 +37,11 @@ export const GET_COMMUNITIES = gql`
                 profileImageURL
             }
             isJoined
+            meetings {
+                attendees {
+                    id
+                }
+            }
         }
     }
 `
@@ -71,6 +70,12 @@ export const GET_COMMUNITY_BY_ID = gql`
                 firstName
                 lastName
                 profileImageURL
+                role
+            }
+            meetings {
+                attendees {
+                    id
+                }
             }
         }
     }

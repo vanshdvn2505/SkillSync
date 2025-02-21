@@ -160,6 +160,11 @@ class CommunityService{
                         select: {
                             id: true
                         }
+                    },
+                    meetings: {
+                        include: {
+                            attendees: true
+                        }
                     }
                 }
             });            
@@ -185,6 +190,11 @@ class CommunityService{
                     chat: {
                         include: {
                             sender: true,
+                        }
+                    },
+                    meetings: {
+                        include: {
+                            attendees: true
                         }
                     }
                 }

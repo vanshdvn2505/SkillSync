@@ -38,4 +38,19 @@ export interface Community {
             profileImageURL?: string;
         };
     }[];
+    meetings: {
+        id: string
+        title: string
+        description: string        
+        scheduledAt: string
+        isStarted: boolean
+        mentor: {}
+        community: Community
+        tags: string[]
+        attendees: {}
+        maxAttendees: number
+        status: string
+        duration: number
+        level: string
+    }[]
 }
