@@ -25,6 +25,7 @@ export const typeDefs = `#graphql
         creator: User! 
         membersCount: Int,
         isJoined: Boolean,
+        meetings: [Meeting!]!
     }
 `;
   

@@ -14,7 +14,6 @@ export interface Member {
   email?: string;
   role?: string;
   profileImageURL?: string;
-  joinedDate?: string;
 }
 
 const MembersList = ({ members, onRemove }: { members: Member[]; onRemove: (id: string) => void }) => { 
@@ -32,7 +31,7 @@ const MembersList = ({ members, onRemove }: { members: Member[]; onRemove: (id: 
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src={member.profileImageURL} alt={member.firstName} />
+                    <AvatarImage src={member.profileImageURL || "https://github.com/shadcn.png"} alt={member.firstName} />
                     <AvatarFallback>
                       {member.firstName
                         .split(" ")
@@ -45,9 +44,8 @@ const MembersList = ({ members, onRemove }: { members: Member[]; onRemove: (id: 
                       <h3 className="font-semibold">{member.firstName + " " + member.lastName}</h3>
                       <Badge className='bg-primary/30'>{member.role}</Badge>
                     </div>
-                    <p className="text-sm text-muted">@{member.username}</p>
+                    <p className="text-sm text-muted">@{member.username || "User"}</p>
                     <p className="text-sm text-muted">{member.email}</p>
-                    <p className="text-xs text-muted">Joined {new Date(member?.joinedDate || "").toLocaleDateString()}</p>
                   </div>
                 </div>
                 {member.role === "Learner" && (

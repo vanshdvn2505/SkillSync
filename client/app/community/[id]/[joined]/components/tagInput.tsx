@@ -1,5 +1,6 @@
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Badge, X } from "lucide-react";
+import {  X } from "lucide-react";
 import { useState } from "react";
 
 export const TagInput = ({ tags, setTags }: { tags: string[]; setTags: (tags: string[]) => void }) => {

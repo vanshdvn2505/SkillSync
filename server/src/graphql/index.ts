@@ -7,6 +7,7 @@ import { WebSocketServer } from "ws";
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Meeting } from "./meetings/index.ts";
+import { Resource } from "./resources/index.ts";
 import { Post } from "./posts/index.ts";
 
 const createApolloGraphQLServer = async (httpServer: any) => {
@@ -15,12 +16,14 @@ const createApolloGraphQLServer = async (httpServer: any) => {
         ${User.typeDefs}
         ${Chat.typeDefs}
         ${Meeting.typeDefs}
+        ${Resource.typeDefs}
         ${Post.typeDefs}
         
         type Query {
             ${User.queries}
             ${Chat.queries}
             ${Meeting.queries}
+            ${Resource.queries}
             ${Post.queries}
         }
 
@@ -28,6 +31,7 @@ const createApolloGraphQLServer = async (httpServer: any) => {
             ${User.mutations}
             ${Chat.mutations}
             ${Meeting.mutations}
+            ${Resource.mutations}
             ${Post.mutations}
         }
 
@@ -42,17 +46,18 @@ const createApolloGraphQLServer = async (httpServer: any) => {
             ...User.resolvers.queries,
             ...Chat.resolvers.queries,
             ...Meeting.resolvers.queries,
+            ...Resource.resolvers.queries,
             ...Post.resolvers.Query,
         },
         Mutation: {
             ...User.resolvers.mutations,
             ...Chat.resolvers.mutations,
+            ...Resource.resolvers.mutations,
             ...Meeting.resolvers.mutations,
             ...Post.resolvers.Mutation
         },
         Subscription: {
             ...Chat.resolvers.subscriptions,
-            ...Meeting.resolvers.subscriptions,
         },
     };
 

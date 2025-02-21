@@ -29,8 +29,13 @@ const mutations = {
 const subscriptions = {
   meetingStarted: {
     subscribe: (_: any, { meetingId }: { meetingId: string }) => {
+      // console.log("🛜 Client Subscribing to:", `MEETING_STARTED_${meetingId}`);
       return pubsub.asyncIterableIterator([`MEETING_STARTED_${meetingId}`]);
     },
+    resolve: (payload: any) => {
+      // console.log("📢 Resolving Payload for Subscription:", payload);
+      return payload.meetingStarted; // Ensure this matches the expected structure
+    }
   },
 };
 

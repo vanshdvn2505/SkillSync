@@ -1,5 +1,5 @@
 export const mutations = `#graphql
-    getAccessToken(roomName: String!, userName: String!): String!
+    getAccessToken(roomName: String!, userName: String!): GraphQLJSONObject
 
     createMeeting(
         title: String!,

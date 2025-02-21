@@ -39,7 +39,7 @@ const mutations = {
 const subscriptions = {
     messageAdded: {
         subscribe: () => {
-            console.log("🔴 Subscription triggered!");
+            // console.log("🔴 Subscription triggered!");
             return pubsub.asyncIterableIterator([MESSAGE_ADDED]);
           }
     }
