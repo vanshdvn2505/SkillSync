@@ -15,20 +15,6 @@ export default function Home() {
     
   const { user, loading } = useAuth();
 
-  // if(loading){
-  //   return <div>Loading...</div>
-  // }
-
-  // const [showSplash, setShowSplash] = useState(true);
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setShowSplash(false), 2059); 
-  //   return () => clearTimeout(timer);
-  // }, []);
-
-  // if (showSplash) {
-  //   return <SplashScreen />;
-  // }
-
   return (
     <div className="min-h-screen min-w-screen flex flex-col w-full bg-background ">
       <Navbar />
