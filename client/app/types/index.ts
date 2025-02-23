@@ -7,7 +7,7 @@ export type Post = {
     community: string;
     content: string;
     image: string;
-    upvotes: number;
+    likes: number;
     date: string;
     tags: string[];
 };

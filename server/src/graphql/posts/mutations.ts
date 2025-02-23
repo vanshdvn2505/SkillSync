@@ -1,5 +1,5 @@
 export const mutations = `#graphql
-    createPost(title: String!, content: String!, imageUrl: String, authorId: String!): Post!
+    createPost(title: String!, content: String!, imageUrl: String, authorId: String!, tags: [String!]!): Post!
     deletePost(id: String!): Post!
     likePost(postId: String!, userId: String!): Post!
     unlikePost(postId: String!, userId: String!): Post!

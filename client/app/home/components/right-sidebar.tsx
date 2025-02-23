@@ -24,8 +24,8 @@ export function RightSidebar() {
           <CardContent className="shadow-primary shadow-sm">
             <ul className="space-y-2">
               {upcomingMeetings.map((meeting, index) => (
-                <>
-                  <div key={index} className="flex flex-col space-y-5 shadow-sm">
+                <div key={index}>
+                  <div className="flex flex-col space-y-5 shadow-sm">
                     <div className="shadow-md px-4 py-2 rounded-md">
                       <li key={index} className="flex justify-between text-sm">
                         <span className="text-accent">{meeting.title}</span>
@@ -41,7 +41,7 @@ export function RightSidebar() {
                       </div>
                     </div>
                   </div>
-                </>
+                </div>
               ))}
             </ul>
           </CardContent>

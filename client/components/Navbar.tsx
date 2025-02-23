@@ -21,7 +21,7 @@ export function Navbar() {
     { name: "Profile", path: "/profile" },
     ...(user && user.role === "Mentor"
       ? [
-          { name: "Communities", path: "/communities" },
+          { name: "Communities", path: "/community" },
           { name: "Post", path: "/post" },
         ]
     : []),

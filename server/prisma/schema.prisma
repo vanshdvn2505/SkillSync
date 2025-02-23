@@ -49,7 +49,7 @@ model User {
   meetingsScheduled  Meeting[]     @relation("MentorMeetings")
   attendingMeetings  Meeting[]     @relation("MeetingParticipants")
   meetingAttendee    Meeting[]     @relation("MeetingAttendees")
-  resources          Resource[]    
+  resources          Resource[]
   posts              Post[]
   comments           Comment[]
   likes              Like[]
@@ -72,7 +72,7 @@ model Community {
   createdAt       DateTime      @default(now())
   members         User[]        @relation("JoinedCommunities")
   meetings        Meeting[]
-  resources       Resource[]    
+  resources       Resource[]
 }
 
 model ChatMessage {
@@ -108,16 +108,15 @@ model Meeting {
 }
 
 model Resource {
-  id           String        @id @default(uuid())
-  title        String
-  fileUrl String @default("")
-  tags String[]
-  communityId   String
-  community     Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  mentorId      String
-  mentor        User      @relation(fields: [mentorId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
+  id          String    @id @default(uuid())
+  title       String
+  fileUrl     String    @default("")
+  tags        String[]
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  mentorId    String
+  mentor      User      @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
 }
 
 model Post {
@@ -127,8 +126,9 @@ model Post {
   imageUrl  String?
   author    User      @relation(fields: [authorId], references: [id])
   authorId  String
-  comments  Comment[]
   likes     Like[]
+  comments  Comment[]
+  tags      Tag[]     @relation("PostTags")
   createdAt DateTime  @default(now())
 }
 
@@ -151,5 +151,12 @@ model Like {
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@unique([postId, userId])
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  posts Post[] @relation("PostTags")
 }
